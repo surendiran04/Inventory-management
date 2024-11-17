@@ -5,11 +5,14 @@ const orderSchema = new mongoose.Schema({
     items:{type:Array,required:true},
     amount:{type:Number,required:true},
     address:{type:Object,required:true},
+    country:{type:String,required:true},
+    state:{type:String,required:true},
+    zip:{type:String,required:true},
     status:{type:String,default:"Food Processing"},
     date:{type:Date,default:Date.now()},
     payment:{type:Boolean,default:false}
 })
 
-const orderModel = mongoose.models.order || mongoose.model("order",orderSchema)
+const orderModel = mongoose.model("order",orderSchema)
 
 export default orderModel;
