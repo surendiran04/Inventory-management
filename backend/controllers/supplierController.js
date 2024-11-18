@@ -1,4 +1,4 @@
-import userModel from "../models/userModel.js";
+import supplierModel from "../models/SupplierModel.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import validator from "validator"
@@ -6,11 +6,11 @@ import 'dotenv/config'
 
 let secret = process.env.JWT_SECRET
 
-const loginUser = async (req,res) => {
-    const {email,password} = req.body;
-    console.log(req.body)
+
+const loginSupplier = async (req,res) => {
+    const {email,password,role} = req.body;
     try {
-        const user = await userModel.findOne({email})
+        const user = await supplierModel.findOne({email})
 
         if (!user) {
             return res.json({success:false,message:"User does not exist"})
@@ -21,8 +21,6 @@ const loginUser = async (req,res) => {
         if (!isMatch) {
             return res.json({success:false,message:"Invalid credentials"})
         }
-    
-         const role="customer"
 
         const token = createToken(role);
         res.json({success:true,token,user})
@@ -39,11 +37,10 @@ const createToken = (role) => {
       })
 }
 
-const registerUser = async (req,res) => {
-    const {name,password,email} = req.body;
-    console.log(name,password,email)
+const registerSupplier = async (req,res) => {
+    const {name,password,email,role} = req.body;
     try {
-        const exists = await userModel.findOne({email});
+        const exists = await supplierModel.findOne({email});
         if (exists) {
             return res.json({success:false,message:"User already exists"})
         }
@@ -59,14 +56,14 @@ const registerUser = async (req,res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password,salt);
 
-        const newUser = new userModel({
+        const newUser = new supplierModel({
             name:name,
             email:email,
             password:hashedPassword,
+            role:role
         })
 
         const user = await newUser.save()
-         const role="customer"
         const token = createToken(role)
         res.json({success:true,token,user})
     }
@@ -76,4 +73,4 @@ const registerUser = async (req,res) => {
     }
 }
 
-export {loginUser,registerUser}
+export {loginSupplier,registerSupplier}

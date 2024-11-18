@@ -8,7 +8,7 @@ const orderSchema = new mongoose.Schema({
     country:{type:String,required:true},
     state:{type:String,required:true},
     zip:{type:String,required:true},
-    status:{type:String,default:"Food Processing"},
+    status:{type:String,required:true,default:"order Processing"},
     date:{type:Date,default:Date.now()},
     payment:{type:Boolean,default:false}
 })

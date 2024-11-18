@@ -4,7 +4,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-
+import { useAuthContext } from "./context/authContext"
 import {
   Home,
   Product,
@@ -17,12 +17,14 @@ import {
   Checkout,
   PageNotFound,
 } from "./pages";
+import MyOrders from "./pages/MyOrders/MyOrders";
 import ScrollToTop from "./components/ScrollToTop";
 import { Toaster } from "react-hot-toast";
 
 
 function App() {   //4242424242424242
-
+  const { isLoggedIn } = useAuthContext();
+  
   return (
     <BrowserRouter>
     <ScrollToTop>
@@ -37,6 +39,7 @@ function App() {   //4242424242424242
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/myorders" element={<MyOrders />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="/product/*" element={<PageNotFound />} />
         </Routes>

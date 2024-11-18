@@ -6,7 +6,7 @@ import userRouter from "./routes/userRoute.js"
 import 'dotenv/config' 
 import cartRouter from "./routes/cartRoute.js"
 import orderRouter from "./routes/orderRoute.js"
-
+import supplierRouter from "./routes/supplierRoute.js"
 
 // app config
 const app = express()
@@ -23,7 +23,8 @@ connectDB();
 app.use("/api/product",productRouter)
 app.use("/images",express.static('uploades'))
 app.use('/',userRouter)
-// app.use("/api/cart",cartRouter)
+app.use('/api',supplierRouter);
+app.use("/cart",cartRouter)
 // app.use("/api/order",orderRouter)
 
 app.get("/",(req,res)=>{
