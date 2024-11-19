@@ -20,6 +20,7 @@ import {
 import MyOrders from "./pages/MyOrders/MyOrders";
 import ScrollToTop from "./components/ScrollToTop";
 import { Toaster } from "react-hot-toast";
+import Verify from "./pages/Verify/Verify"
 
 
 function App() {   //4242424242424242
@@ -42,6 +43,7 @@ function App() {   //4242424242424242
           <Route path="/myorders" element={<MyOrders />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="/product/*" element={<PageNotFound />} />
+          < Route path='/verify' element={<Verify />} />
         </Routes>
       </Provider>
     </ScrollToTop>

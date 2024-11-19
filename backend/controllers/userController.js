@@ -65,8 +65,9 @@ const registerUser = async (req,res) => {
             password:hashedPassword,
         })
 
-        const user = await newUser.save()
+        await newUser.save()
          const role="customer"
+         const user = await userModel.findOne({email});
         const token = createToken(role)
         res.json({success:true,token,user})
     }

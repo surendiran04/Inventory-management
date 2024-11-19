@@ -1,67 +1,95 @@
-import React, { useEffect, useState } from 'react'
-import './List.css'
-import axios from 'axios'
-import { toast } from 'react-toastify'
+import React, { useEffect, useState } from "react";
+import "./List.css";
+import { toast } from "react-toastify";
+import Sidebar from '../../components/Sidebar/Sidebar';
 
-const List = ({url}) => {
+const { VITE_BACKEND_URL } = import.meta.env;
 
-  
-  const [list,setList] = useState([])
+const List = () => {
+  const [list, setList] = useState([]);
 
+  // Fetch list from the backend
   const fetchList = async () => {
-    const response = await axios.get(`${url}/api/food/list`);
-    console.log(response.data);
-    if (response.data.success) {
-      setList(response.data.data);
-    } else {
-      toast.error("Error");
-    }
-  }
+    try {
+      const response = await fetch(`${VITE_BACKEND_URL}api/product/list`, {
+        method: "GET",
+      });
 
-  const removeFood = async (foodId) =>{
-    console.log(foodId)
-    const response = await axios.post(`${url}/api/food/remove`,{id:foodId})
-    await fetchList();
-    if (response.data.success) {
-      toast.success(response.data.message)
-    }
-    else {
-      toast.error("Error")
-    }
-  }
+      const res = await response.json();
 
-useEffect(()=>{
-  fetchList();
-},[])
+      if (res.success) {
+        setList(res.data);
+      } else {
+        toast.error("Failed to fetch the list.");
+      }
+    } catch (error) {
+      console.error("Error fetching the list:", error);
+      toast.error("Error fetching the list.");
+    }
+  };
+
+  // Remove a product by ID
+  const removeProduct = async (productId) => {
+    try {
+      console.log(productId);
+      const response = await fetch(
+        `${VITE_BACKEND_URL}api/product/remove`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id: productId }), // Send the ID in the request body
+        });
+    
+      const res = await response.json();
+      if (res.success) {
+        toast.success(res.message);
+        fetchList();
+      } else {
+        toast.error("Failed to remove the product.");
+      }
+    } catch (error) {
+      console.error("Error removing the product:", error);
+      toast.error("Error removing the product.");
+    }
+  };
+
+  useEffect(() => {
+    fetchList();
+  }, []);
 
   return (
-    <div>
-      <div className="list add flex-col">
-        <p>All Food List</p>
-        <div className="list-table">
-          <div className="list-table-format title">
-            <b>Image</b>
-            <b>Name</b>
-            <b>Category</b>
-            <b>Price</b>
-            <b>Action</b>
-          </div>
-          {list.map((item,index)=>{
-            return (
+    <div className='app-content'>
+        <Sidebar />
+        <div className="list add flex-col">
+          <p>All Product List</p>
+          <div className="list-table">
+            <div className="list-table-format title">
+              <b>Image</b>
+              <b>Name</b>
+              <b>Category</b>
+              <b>Price</b>
+              <b>Stock</b>
+              <b>Action</b>
+            </div>
+            {list.map((item, index) => (
               <div key={index} className="list-table-format">
-                <img src={`${url}/images/`+item.image} alt="" />
+                <img src={item.image} alt={item.name} />
                 <p>{item.name}</p>
                 <p>{item.category}</p>
                 <p>${item.price}</p>
-                <p onClick={()=>{removeFood(item._id)}} className='cursor'> X</p>
+                <p>{item.stock}</p> {/* Display stock value */}
+                <p onClick={() => removeProduct(item._id)} className="cursor">
+                  X
+                </p>
               </div>
-            )
-          })}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  )
-}
+    );
+    
+};
 
-
-export default List
+export default List;

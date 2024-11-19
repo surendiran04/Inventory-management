@@ -15,7 +15,7 @@ const Sidebar = () => {
   return (
     <div className='sidebar'>
         <div className="sidebar-options">
-            <NavLink to='/' className="sidebar-option">
+            <NavLink to='/admin/home' className="sidebar-option">
                 <HomeIcon sx={{
                     color: 'black',
                     fontSize: 30,
@@ -29,19 +29,19 @@ const Sidebar = () => {
             <p>Home</p>
         </div>
         <div className="sidebar-options">
-            <NavLink to='/add' className="sidebar-option">
+            <NavLink to='/admin/add' className="sidebar-option">
                 <img src={assets.add_icon} alt="" />
             </NavLink>
             <p>Add Items</p>
         </div>  
         <div className="sidebar-options">
-            <NavLink to='/list' className="sidebar-option">
+            <NavLink to='/admin/list' className="sidebar-option">
                 <img src={assets.order_icon} alt="" />
             </NavLink>
             <p>List Items</p>
         </div>  
         <div className="sidebar-options">
-            <NavLink to='/orders' className="sidebar-option">
+            <NavLink to='/admin/orders' className="sidebar-option">
                 <img src={assets.order_icon} alt="" />
             </NavLink>
             <p>Orders</p>

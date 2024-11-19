@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addCart } from "../redux/action";
-
+const { VITE_BACKEND_URL } = import.meta.env;
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -9,10 +9,9 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Products = () => {
-  const [data, setData] = useState([]);
-  const [filter, setFilter] = useState(data);
-  const [loading, setLoading] = useState(false);
-  let componentMounted = true;
+  const [data, setData] = useState([]); // Store all products
+  const [filter, setFilter] = useState([]); // Store filtered products
+  const [loading, setLoading] = useState(false)
 
   const dispatch = useDispatch();
 
@@ -21,21 +20,30 @@ const Products = () => {
   };
 
   useEffect(() => {
-    const getProducts = async () => {
+    const fetchList = async () => {
       setLoading(true);
-      const response = await fetch("https://fakestoreapi.com/products/");
-      if (componentMounted) {
-        setData(await response.clone().json());
-        setFilter(await response.json());
+      try {
+        const response = await fetch(`${VITE_BACKEND_URL}/api/product/list`, {
+          method: "GET",
+        });
+        const res = await response.json();
+
+        if (res.success) {
+          setData(res.data); // Set all fetched products
+          setFilter(res.data); // Initially show all products
+      
+        } else {
+          toast.error("Failed to fetch the product list.");
+        }
+      } catch (error) {
+        console.error("Error fetching the list:", error);
+        toast.error("Error fetching the list.");
+      } finally {
         setLoading(false);
       }
-
-      return () => {
-        componentMounted = false;
-      };
     };
 
-    getProducts();
+    fetchList();
   }, []);
 
   const Loading = () => {
@@ -106,12 +114,18 @@ const Products = () => {
             Electronics
           </button>
         </div>
-
+  
         {filter.map((product) => {
+          // Ensure title and description are defined before calling substring
+          const productTitle = product.name ? product.name.substring(0, 12) : "No Title";
+          const productDescription = product.description
+            ? product.description.substring(0, 90)
+            : "No Description";
+  
           return (
             <div
-              id={product.id}
-              key={product.id}
+              id={product._id}
+              key={product._id}
               className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4"
             >
               <div className="card text-center h-100" key={product.id}>
@@ -123,20 +137,18 @@ const Products = () => {
                 />
                 <div className="card-body">
                   <h5 className="card-title">
-                    {product.title.substring(0, 12)}...
+                    {productTitle}...
                   </h5>
                   <p className="card-text">
-                    {product.description.substring(0, 90)}...
+                    {productDescription}...
                   </p>
                 </div>
                 <ul className="list-group list-group-flush">
                   <li className="list-group-item lead">$ {product.price}</li>
-                  {/* <li className="list-group-item">Dapibus ac facilisis in</li>
-                    <li className="list-group-item">Vestibulum at eros</li> */}
                 </ul>
                 <div className="card-body">
                   <Link
-                    to={"/product/" + product.id}
+                    to={"/product/" + product._id}
                     className="btn btn-dark m-1"
                   >
                     Buy Now
@@ -158,21 +170,22 @@ const Products = () => {
       </>
     );
   };
+  
+
   return (
-    <>
-      <div className="container my-3 py-3">
-        <div className="row">
-          <div className="col-12">
-            <h2 className="display-5 text-center">Latest Products</h2>
-            <hr />
-          </div>
-        </div>
-        <div className="row justify-content-center">
-          {loading ? <Loading /> : <ShowProducts />}
+    <div className="container my-3 py-3">
+      <div className="row">
+        <div className="col-12">
+          <h2 className="display-5 text-center">Latest Products</h2>
+          <hr />
         </div>
       </div>
-    </>
+      <div className="row justify-content-center">
+        {loading ? <Loading /> : <ShowProducts />}
+      </div>
+    </div>
   );
 };
 
 export default Products;
+

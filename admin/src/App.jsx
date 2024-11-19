@@ -13,9 +13,11 @@ import { ROUTES,Admin_ROUTES,Supplier_ROUTES } from './Routes/Routes.js';
 import { StoreContext } from './Context/authContext.jsx';
 
 const App = () => {
-  const {isLoggedIn,decodedToken} = useContext(StoreContext)
-  const userRoles = decodedToken?.role[0] ;
+  // const {isLoggedIn,decodedToken} = useContext(StoreContext)
+  // const userRoles = decodedToken?.role[0] ;
   const url = "http://localhost:4000";
+  const isLoggedIn=true;
+  const userRoles="admin";
 
 
   function renderRoutes() {
@@ -59,7 +61,7 @@ const App = () => {
           {renderRoutes()}
           {(isLoggedIn && userRoles==="supplier") ?(renderSupplierRoutes()):(renderRoutes())}
           {(isLoggedIn && userRoles==="admin") ?(renderAdminRoutes()):(renderRoutes())}
-          <Route Component={NotFound} path="*" />;
+          {/* <Route Component={NotFound} path="*" />; */}
         </Routes>
     </div> 
   )

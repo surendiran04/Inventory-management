@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 const Navbar = () => {
   return (
     <div className='navbar'>
-      <Link to='/'><img className='logo' src={assets.logo} alt="" /></Link>
+      <Link to='/admin/home'><img className='logo' src={assets.logo} alt="" /></Link>
       {/* <img className='profile' src={assets.profile_image} alt='' /> */}
       <div><div className='profile'>R</div></div>
     </div>
